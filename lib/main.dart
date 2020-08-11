@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttershare/models/user.dart';
 import 'package:fluttershare/pages/home.dart';
 
 void main() {

@@ -11,7 +11,7 @@ class _TimelineState extends State<Timeline> {
   @override
   Widget build(context) {
     return Scaffold(
-      appBar: header(context),
+      appBar: header(context,isAppTitle: true),
       body: Column(children: [circularProgress(),linearProgress(),],)
     );
   }
