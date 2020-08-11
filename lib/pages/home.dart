@@ -6,6 +6,7 @@ import 'package:fluttershare/pages/activity_feed.dart';
 import 'package:fluttershare/pages/create_account.dart';
 import 'package:fluttershare/pages/profile.dart';
 import 'package:fluttershare/pages/search.dart';
+import 'package:fluttershare/pages/timeline.dart';
 import 'package:fluttershare/pages/upload.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -86,7 +87,7 @@ class _HomeState extends State<Home> {
     pageController.animateToPage(
       index,
       duration: Duration(milliseconds: 500),
-      curve: Curves.elasticInOut,
+      curve: Curves.easeIn,
     );
   }
 
@@ -118,12 +119,14 @@ class _HomeState extends State<Home> {
   Widget buildAuthScreen() => Scaffold(
         body: PageView(
           children: <Widget>[
-//            Timeline(),
-            RaisedButton.icon(
-              onPressed: logout,
-              icon: Icon(Icons.logout),
-              label: Text('Logout'),
-            ),
+            Timeline(),
+//            Center(
+//              child: RaisedButton.icon(
+//                onPressed: logout,
+//                icon: Icon(Icons.logout),
+//                label: Text('Logout'),
+//              ),
+//            ),
             ActivityFeed(),
             Upload(),
             Search(),
