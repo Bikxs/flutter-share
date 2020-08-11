@@ -28,6 +28,9 @@ class _HomeState extends State<Home> {
   bool isAuth = false;
   PageController pageController;
   int pageIndex = 0;
+  final GlobalKey<ScaffoldState> _scaffoldKeyUnAuth =
+      GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKeyAuth = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -35,14 +38,14 @@ class _HomeState extends State<Home> {
     // detects when uer has signed in or out
     pageController = PageController();
     googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
-      handeSignIn(account);
+      handleSignIn(account);
     }, onError: (err) {
       print('Error signing in $err');
     });
     googleSignIn
         .signInSilently(suppressErrors: false)
         .then((GoogleSignInAccount account) {
-      handeSignIn(account);
+      handleSignIn(account);
     }).catchError((err) {
       print('Error signing in $err');
     });
@@ -59,12 +62,27 @@ class _HomeState extends State<Home> {
     return isAuth ? buildAuthScreen() : buildUnAuthScreen();
   }
 
-  void login() {
-    googleSignIn.signIn();
+  Future<void> login() async {
+    try {
+      await googleSignIn.signIn();
+    } catch (error) {
+      print(error.toString());
+      _scaffoldKeyUnAuth.currentState.showSnackBar(SnackBar(
+        content: Text('Error During Login. ${error}'),
+        backgroundColor: Colors.red,
+      ));
+    }
   }
 
-  void logout() {
-    googleSignIn.signOut();
+  Future<void> logout() async {
+    try {
+      await googleSignIn.signOut();
+    } catch (error) {
+      _scaffoldKeyAuth.currentState.showSnackBar(SnackBar(
+        content: Text('Error During Logout. ${error}'),
+        backgroundColor: Colors.red,
+      ));
+    }
   }
 
   void onPageChanged(int pageIndex) {
@@ -73,7 +91,7 @@ class _HomeState extends State<Home> {
     });
   }
 
-  void handeSignIn(GoogleSignInAccount account) {
+  void handleSignIn(GoogleSignInAccount account) {
     if (account != null) {
 //      print(account);
       createUserInFirestore();
@@ -121,6 +139,7 @@ class _HomeState extends State<Home> {
   }
 
   Widget buildAuthScreen() => Scaffold(
+        key: _scaffoldKeyAuth,
         body: PageView(
           children: <Widget>[
             Timeline(
@@ -155,6 +174,7 @@ class _HomeState extends State<Home> {
 
   Widget buildUnAuthScreen() {
     return Scaffold(
+      key: _scaffoldKeyUnAuth,
       body: Container(
         decoration: BoxDecoration(
             gradient: LinearGradient(
