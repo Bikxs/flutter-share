@@ -123,18 +123,13 @@ class _HomeState extends State<Home> {
   Widget buildAuthScreen() => Scaffold(
         body: PageView(
           children: <Widget>[
-            Timeline(),
-//            Center(
-//              child: RaisedButton.icon(
-//                onPressed: logout,
-//                icon: Icon(Icons.logout),
-//                label: Text('Logout'),
-//              ),
-//            ),
+            Timeline(
+              logout: logout,
+            ),
             ActivityFeed(),
             Upload(currentUser: currentUser),
             Search(),
-            Profile(),
+            Profile(profileId: currentUser?.id),
           ],
           controller: pageController,
           onPageChanged: onPageChanged,
