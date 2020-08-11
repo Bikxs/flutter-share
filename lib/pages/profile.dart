@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttershare/models/user.dart';
 import 'package:fluttershare/pages/edit_profile.dart';
 import 'package:fluttershare/pages/home.dart';
 import 'package:fluttershare/widgets/error.dart';
 import 'package:fluttershare/widgets/header.dart';
+import 'package:fluttershare/widgets/post.dart';
 import 'package:fluttershare/widgets/progress.dart';
 
 class Profile extends StatefulWidget {
@@ -18,6 +20,34 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   final String currentUserId = currentUser.id;
+  bool _isLoading = false;
+  int postCount = 0;
+  List<Post> posts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getProfilePost();
+  }
+
+  Future<void> getProfilePost() async {
+    setState(() {
+      _isLoading = true;
+    });
+    QuerySnapshot snapshot = await postRef
+        .document(widget.profileId)
+        .collection('userPosts')
+        .orderBy('timestamp', descending: true)
+        .getDocuments();
+    setState(() {
+      _isLoading = false;
+      postCount = snapshot.documents.length;
+      posts = snapshot.documents.map((doc) => Post.fromDocument(doc)).toList();
+      print('postcount: $postCount');
+
+
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +56,10 @@ class _ProfileState extends State<Profile> {
       body: ListView(
         children: [
           buildProfileHeader(),
+          Divider(
+            height: 0.0,
+          ),
+          buildProfilePosts(),
         ],
       ),
     );
@@ -66,7 +100,7 @@ class _ProfileState extends State<Profile> {
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                buildCountColumn('posts', 0),
+                                buildCountColumn('posts', postCount),
                                 buildCountColumn('following', 0),
                                 buildCountColumn('followers', 0),
                               ],
@@ -181,6 +215,17 @@ class _ProfileState extends State<Profile> {
       context,
       MaterialPageRoute(
           builder: (context) => EditProfile(currentUserId: currentUserId)),
+    );
+  }
+
+  Widget buildProfilePosts() {
+    if (_isLoading) {
+      return circularProgress();
+    }
+    print('posts: ${posts.length}');
+
+    return Column(
+      children: posts,
     );
   }
 }
