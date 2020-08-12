@@ -37,15 +37,13 @@ class _ProfileState extends State<Profile> {
     QuerySnapshot snapshot = await postRef
         .document(widget.profileId)
         .collection('userPosts')
-        .orderBy('timestamp', descending: true)
+//        .orderBy('timestamp', descending: true)
         .getDocuments();
     setState(() {
       _isLoading = false;
       postCount = snapshot.documents.length;
       posts = snapshot.documents.map((doc) => Post.fromDocument(doc)).toList();
       print('postcount: $postCount');
-
-
     });
   }
 
@@ -74,7 +72,9 @@ class _ProfileState extends State<Profile> {
         } else {
           if (snapshot.hasError) {
             return ErrorDisplay(
-                title: 'Error Encountered', message: snapshot.error.toString());
+              title: 'Error Encountered',
+              message: snapshot.error.toString(),
+            );
           } else {
             User user = User.fromDocument(snapshot.data);
             return Padding(
@@ -194,8 +194,8 @@ class _ProfileState extends State<Profile> {
       child: FlatButton(
         onPressed: function,
         child: Container(
-          width: 250.0,
-          height: 27.0,
+          width: MediaQuery.of(context).size.width * 0.5,
+          height: 30.0,
           child: Text(
             label,
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -222,7 +222,7 @@ class _ProfileState extends State<Profile> {
     if (_isLoading) {
       return circularProgress();
     }
-    print('posts: ${posts.length}');
+//    print('posts: ${posts.length}');
 
     return Column(
       children: posts,

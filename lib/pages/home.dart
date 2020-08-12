@@ -40,14 +40,14 @@ class _HomeState extends State<Home> {
     googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
       handleSignIn(account);
     }, onError: (err) {
-      print('Error signing in $err');
+      print('Error signing $err');
     });
     googleSignIn
         .signInSilently(suppressErrors: false)
         .then((GoogleSignInAccount account) {
       handleSignIn(account);
     }).catchError((err) {
-      print('Error signing in $err');
+      print('Error signing $err');
     });
   }
 
@@ -68,7 +68,7 @@ class _HomeState extends State<Home> {
     } catch (error) {
       print(error.toString());
       _scaffoldKeyUnAuth.currentState.showSnackBar(SnackBar(
-        content: Text('Error During Login. ${error}'),
+        content: Text('Error During Login. $error'),
         backgroundColor: Colors.red,
       ));
     }
@@ -79,7 +79,7 @@ class _HomeState extends State<Home> {
       await googleSignIn.signOut();
     } catch (error) {
       _scaffoldKeyAuth.currentState.showSnackBar(SnackBar(
-        content: Text('Error During Logout. ${error}'),
+        content: Text('Error During Logout. $error'),
         backgroundColor: Colors.red,
       ));
     }
@@ -135,7 +135,7 @@ class _HomeState extends State<Home> {
       doc = await usersRef.document(user.id).get();
     }
     currentUser = User.fromDocument(doc);
-    print('currentUser.email: ${currentUser.email}');
+//    print('currentUser.email: ${currentUser.email}');
   }
 
   Widget buildAuthScreen() => Scaffold(

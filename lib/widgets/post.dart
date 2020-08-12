@@ -55,7 +55,11 @@ class Post extends StatefulWidget {
       location: doc['location'],
       description: doc['description'],
       mediaUrl: doc['mediaUrl'],
-      likes: doc['likes'],
+      likes: doc['likes'] == null
+          ? {}
+          : (doc['likes'] as Map<String, dynamic>).map((key, value) {
+              return MapEntry<String, bool>(key, value as bool);
+            }),
     );
   }
 }
